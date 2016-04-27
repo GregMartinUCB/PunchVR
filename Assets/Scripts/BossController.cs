@@ -27,6 +27,8 @@ public class BossController : MonoBehaviour {
     {
         currentHealth = maxHealth;
         eyeChangers = GetComponentsInChildren<ChangeEyeMaterial>();
+        //There should only ever be one game manager because it is a singleton nopt destroyed on load.
+        gameManager = FindObjectOfType<GameManager>();
         
     }
 

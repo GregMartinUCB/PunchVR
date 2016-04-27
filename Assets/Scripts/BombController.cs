@@ -17,12 +17,17 @@ public class BombController : MonoBehaviour {
     [SerializeField]
     private float bombSpeed = 3f;
     private Vector3 playerDir = Vector3.zero;
+    private Transform playerHeadTransform;
 
     void Start () {
 
         hasBeenHit = false;
         bombRB = GetComponent<Rigidbody>();
         gm = GameObject.FindObjectOfType<GameManager>();
+
+        //There should only be one object with the tag MainCamera, so this method of instantiating should
+        //not cause a problem.
+        playerHeadTransform = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Transform>();
 	
 	}
 	
@@ -46,9 +51,9 @@ public class BombController : MonoBehaviour {
     {
         if (!hasBeenHit)
         {
-            if (gm.playerPosition != null)
+            if (playerHeadTransform != null)
             {
-                playerDir = gm.playerPosition.position - this.transform.position;
+                playerDir = playerHeadTransform.position - this.transform.position;
                 this.transform.Translate(playerDir.normalized * Time.deltaTime * bombSpeed);
 
             }
@@ -78,7 +83,7 @@ public class BombController : MonoBehaviour {
             GameObject boss = col.gameObject;
             boss.GetComponent<BossController>().TakeDamage(1f);
 
-            bombRB.AddExplosionForce(1000, this.transform.position, 10f);
+            //bombRB.AddExplosionForce(1000, this.transform.position, 10f);
 
             Explode();
 

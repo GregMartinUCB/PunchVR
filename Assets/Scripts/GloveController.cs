@@ -40,6 +40,8 @@ public class GloveController : MonoBehaviour
     void Start()
     {
 
+        gameManager = FindObjectOfType<GameManager>();
+            
         //quick test to determine if Calculate Standard Deviation is working
         CalculateDeviationTest();
 

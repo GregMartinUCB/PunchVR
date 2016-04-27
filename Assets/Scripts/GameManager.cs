@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour {
     public GameObject gameOverSign;
     public GameObject restartButton;
     public float bombSpawnTime = 1f;
-    public Transform playerPosition;
 
 
     private float timeSinceBomb = 0f;

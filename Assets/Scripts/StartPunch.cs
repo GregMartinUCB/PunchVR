@@ -8,7 +8,9 @@ public class StartPunch : MonoBehaviour {
 
     void Start()
     {
-        
+        gameManager = FindObjectOfType<GameManager>();
+
+
     }
 
     void Update()

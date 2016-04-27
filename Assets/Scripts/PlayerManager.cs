@@ -16,6 +16,7 @@ public class PlayerManager : MonoBehaviour {
 
     void Start()
     {
+        gm = FindObjectOfType<GameManager>();
         currentHealth = maxHealth;
     }
 
