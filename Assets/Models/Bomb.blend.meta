@@ -1,0 +1,150 @@
+fileFormatVersion: 2
+guid: 3b15133dd8dc8ba449134551769b9a4c
+timeCreated: 1461167521
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Bomb
+    100004: Fuse
+    100006: Fuse_001
+    100008: Fuse_002
+    100010: Fuse_003
+    100012: Fuse_004
+    100014: Fuse_005
+    100016: Fuse_006
+    100018: Fuse_007
+    100020: Fuse_008
+    100022: Fuse_009
+    100024: Fuse_010
+    100026: Fuse_011
+    100028: Fuse_012
+    100030: Fuse_013
+    400000: //RootNode
+    400002: Bomb
+    400004: Fuse
+    400006: Fuse_001
+    400008: Fuse_002
+    400010: Fuse_003
+    400012: Fuse_004
+    400014: Fuse_005
+    400016: Fuse_006
+    400018: Fuse_007
+    400020: Fuse_008
+    400022: Fuse_009
+    400024: Fuse_010
+    400026: Fuse_011
+    400028: Fuse_012
+    400030: Fuse_013
+    2300000: Bomb
+    2300002: Fuse
+    2300004: Fuse_001
+    2300006: Fuse_002
+    2300008: Fuse_003
+    2300010: Fuse_004
+    2300012: Fuse_005
+    2300014: Fuse_006
+    2300016: Fuse_007
+    2300018: Fuse_008
+    2300020: Fuse_009
+    2300022: Fuse_010
+    2300024: Fuse_011
+    2300026: Fuse_012
+    2300028: Fuse_013
+    3300000: Bomb
+    3300002: Fuse
+    3300004: Fuse_001
+    3300006: Fuse_002
+    3300008: Fuse_003
+    3300010: Fuse_004
+    3300012: Fuse_005
+    3300014: Fuse_006
+    3300016: Fuse_007
+    3300018: Fuse_008
+    3300020: Fuse_009
+    3300022: Fuse_010
+    3300024: Fuse_011
+    3300026: Fuse_012
+    3300028: Fuse_013
+    4300000: Fuse
+    4300002: Bomb
+    4300004: Fuse_013
+    4300006: Fuse_012
+    4300008: Fuse_011
+    4300010: Fuse_010
+    4300012: Fuse_009
+    4300014: Fuse_008
+    4300016: Fuse_007
+    4300018: Fuse_006
+    4300020: Fuse_005
+    4300022: Fuse_004
+    4300024: Fuse_003
+    4300026: Fuse_002
+    4300028: Fuse_001
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
