@@ -9,6 +9,7 @@ public class BossController : MonoBehaviour {
     public float maxHealth = 100f;
     public GameObject bomb;
     public float scoreModifier = 50f;
+    public bool testEyes = false;
 
     private float currentHealth = 0f;
     private bool destinationReached = false;
@@ -26,10 +27,14 @@ public class BossController : MonoBehaviour {
     void Awake()
     {
         currentHealth = maxHealth;
-        eyeChangers = GetComponentsInChildren<ChangeEyeMaterial>();
         //There should only ever be one game manager because it is a singleton nopt destroyed on load.
         gameManager = FindObjectOfType<GameManager>();
         
+    }
+
+    void Start()
+    {
+        eyeChangers = GetComponentsInChildren<ChangeEyeMaterial>();
     }
 
     void FixedUpdate()
@@ -38,7 +43,7 @@ public class BossController : MonoBehaviour {
         {
             Ascend();
         }
-        if(gameManager.isStarted && destinationReached && !gameManager.isGameOver)
+        if (gameManager.isStarted && destinationReached && !gameManager.isGameOver)
         {
             timeSinceBombSpawn += Time.deltaTime;
             if (timeSinceBombSpawn > bombSpawnTime)
@@ -47,17 +52,30 @@ public class BossController : MonoBehaviour {
                 timeSinceBombSpawn = 0f;
             }
         }
-        
-        if(currentHealth <= 0f)
+
+        if (currentHealth <= 0f)
         {
             Destroy(gameObject);
         }
-        
 
+
+        if (testEyes)
+        {
+            TestEyeMaterialChange();
+        }
     }
 
+    //A method designed to test whether the eyes are changing by making testEyes true
+    //in editor during game.
+    private void TestEyeMaterialChange()
+    {
 
-   
+        foreach (ChangeEyeMaterial eye in eyeChangers)
+        {
+            eye.MakeEyesBloodShot();
+        }
+        
+    }   
     
 
     public void TakeDamage(float projectileVelocity)

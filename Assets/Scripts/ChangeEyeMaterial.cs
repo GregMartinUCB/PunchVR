@@ -3,9 +3,9 @@ using System.Collections;
 
 public class ChangeEyeMaterial : MonoBehaviour {
 
-    public Material bloodShotEye;
-    public Material normalEye;
+    public Material[] bloodShotEye;
 
+    private Material[] normalEye;
     private MeshRenderer eyeMeshRend;
     private float blootShotLength = 1f;
 
@@ -13,6 +13,7 @@ public class ChangeEyeMaterial : MonoBehaviour {
     void Start()
     {
         eyeMeshRend = GetComponent<MeshRenderer>();
+        normalEye = eyeMeshRend.materials;
 
     }
 
@@ -21,7 +22,8 @@ public class ChangeEyeMaterial : MonoBehaviour {
     //to normal after a set length of time.
     public void MakeEyesBloodShot()
     {
-        eyeMeshRend.materials[1] = bloodShotEye;
+        //The 2nd element in the array should be the whites of his eyes.
+        eyeMeshRend.materials = bloodShotEye;
         StartCoroutine( MakeEyesNormal());
 
     }
@@ -29,7 +31,7 @@ public class ChangeEyeMaterial : MonoBehaviour {
     IEnumerator MakeEyesNormal()
     {
         yield return new WaitForSeconds(blootShotLength);
-        eyeMeshRend.materials[1] = normalEye;
+        eyeMeshRend.materials = normalEye;
 
     }
 
