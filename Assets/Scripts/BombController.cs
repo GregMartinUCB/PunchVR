@@ -53,7 +53,8 @@ public class BombController : MonoBehaviour {
         {
             if (playerHeadTransform != null)
             {
-                playerDir = playerHeadTransform.position - this.transform.position;
+                //This will direct the bomb to move to the players head minus half a meter down, Thus aiming for his/her body.
+                playerDir = (playerHeadTransform.position - new Vector3(0,.5f,0) )- this.transform.position;
                 this.transform.Translate(playerDir.normalized * Time.deltaTime * bombSpeed);
 
             }

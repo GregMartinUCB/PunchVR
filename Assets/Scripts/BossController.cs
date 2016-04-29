@@ -13,10 +13,11 @@ public class BossController : MonoBehaviour {
     public float maxBombSpawnTime = 3f;
 
 
+    private Transform[] eyeTransform;
     private float currentBombSpawnTime;
     private float currentHealth = 0f;
     private bool destinationReached = false;
-    private float startingHeight = 3f;
+    private float startingHeight = 1f;
     private float ascensionSpeed = 2f;
     private SpringJoint recoilSpring;
     [SerializeField]
@@ -25,6 +26,7 @@ public class BossController : MonoBehaviour {
    
    
     private float timeSinceBombSpawn = 0f;
+    private int whichEyeSpawnBomb = 0;
 
     void Awake()
     {
@@ -38,14 +40,24 @@ public class BossController : MonoBehaviour {
     void Start()
     {
         eyeChangers = GetComponentsInChildren<ChangeEyeMaterial>();
+
+        eyeTransform = new Transform[2];
+        GetEyeTransforms();
+
+        
     }
+
+  
 
     void FixedUpdate()
     {
+        //Game has started, boss needs to appear infront of player
         if (gameManager.isStarted && !destinationReached)
         {
             Ascend();
         }
+
+        
         if (gameManager.isStarted && destinationReached && !gameManager.isGameOver)
         {
            
@@ -53,9 +65,11 @@ public class BossController : MonoBehaviour {
             timeSinceBombSpawn += Time.deltaTime;
             if (timeSinceBombSpawn > currentBombSpawnTime)
             {
+                //Shoot bomb, reset counter till next bomb and re-evaluate what the spawn rate should be.
                 ShootBomb();
                 timeSinceBombSpawn = 0f;
                 currentBombSpawnTime = DetermineSpawnTime();
+
             }
         }
 
@@ -77,7 +91,7 @@ public class BossController : MonoBehaviour {
     private float DetermineSpawnTime()
     {
         float scoreAdjustedTime = Mathf.Sqrt(gameManager.score);
-        scoreAdjustedTime /= (10 + Mathf.Sqrt(gameManager.score));
+        scoreAdjustedTime /= (scoreModifier + Mathf.Sqrt(gameManager.score));
 
         float newSpawnTime = maxBombSpawnTime - (maxBombSpawnTime - 0.5f) * scoreAdjustedTime;
 
@@ -135,7 +149,9 @@ public class BossController : MonoBehaviour {
 
     private void ShootBomb()
     {
-        GameObject bombInstance = (GameObject)Instantiate(bomb, this.transform.position, Quaternion.identity);
+        //whichEyeSpawnBomb%2 will alternate between 0 and 1 making which eye the bomb spawn from alternate.
+        GameObject bombInstance = (GameObject)Instantiate(bomb, eyeTransform[whichEyeSpawnBomb%2].position, Quaternion.identity);
+        whichEyeSpawnBomb++;
 
         Rigidbody bombRB = bombInstance.GetComponent<Rigidbody>();
 
@@ -144,4 +160,31 @@ public class BossController : MonoBehaviour {
 
     }
 
+
+    //This method finds the transforms of the eyes. These transforms will be used to position bombs.
+    private void GetEyeTransforms()
+    {
+
+        Transform[] childrenTransforms = GetComponentsInChildren<Transform>();
+        int count = 0;
+        for (int i = 0; i < childrenTransforms.Length; i++)
+        {
+            if (childrenTransforms[i].tag == "Eye")
+            {
+                //Incase more eyes are found than expected
+                if (count < 2)
+                {
+                    eyeTransform[count] = childrenTransforms[i];
+                    count++;
+                    
+                }
+                else
+                {
+                    Debug.LogError("Incorrect number of eyes. Number of eyes found: " + count);
+                }
+                
+            }
+        }
+        
+    }
 }

@@ -35,6 +35,8 @@ public class RestartButton : MonoBehaviour {
         if (distantPushed > .2f)
         {
             gameManager.ResetStartConditions();
+            //Stops the button from moving too far.
+            buttonRigidBody.velocity = Vector3.zero;
             SteamVR_LoadLevel.Begin("MainLevel");
         }
 
