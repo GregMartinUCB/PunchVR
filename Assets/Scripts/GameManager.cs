@@ -14,13 +14,13 @@ public class GameManager : MonoBehaviour {
     public GameObject gameOverSign;
     public GameObject restartButton;
     public float bombSpawnTime = 1f;
+    public float score = 0f;
 
 
     private float timeSinceBomb = 0f;
     private bool spawnClear = false;
     private Vector3 spawnSpot;
     private bool isGameOverDisplayed = false;
-    private float score = 0f;
     private TextMesh scoreText;
     private MeshRenderer scoreRenderer;
 
