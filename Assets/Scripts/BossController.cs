@@ -7,26 +7,36 @@ public class BossController : MonoBehaviour {
     public GameManager gameManager;
     public GameObject player;
     public float maxHealth = 100f;
-    public GameObject bomb;
-    public float scoreModifier = 50f;
-    public bool testEyes = false;
-    public float maxBombSpawnTime = 3f;
-
-
-    private Transform[] eyeTransform;
-    private float currentBombSpawnTime;
     private float currentHealth = 0f;
+
+
+    //Variables for Bombs
+    public GameObject bomb;
+    public float maxBombSpawnTime = 3f;
+    public float scoreModifier = 50f;
+    private float timeSinceBombSpawn = 0f;
+    private float currentBombSpawnTime;
+    private int whichEyeSpawnBomb = 0;
+
+
+    //Variables for boss positioning
     private bool destinationReached = false;
     private float startingHeight = 1f;
     private float ascensionSpeed = 2f;
     private SpringJoint recoilSpring;
-    [SerializeField]
 
+    //Variables for Bloodshot eye effect
+    private Transform[] eyeTransform;
     private ChangeEyeMaterial[] eyeChangers;
-   
-   
-    private float timeSinceBombSpawn = 0f;
-    private int whichEyeSpawnBomb = 0;
+    public bool testEyes = false;
+
+    //Variables for Laser
+    public GameObject laser;
+    public GameObject laserChargeEffect;
+    public float timeBetweenLaser = 10f;
+    private float timeSinceLastLaser = 0f;
+    private ParticleSystem charging;
+    private bool isCharging = false;
 
     void Awake()
     {
@@ -44,6 +54,7 @@ public class BossController : MonoBehaviour {
         eyeTransform = new Transform[2];
         GetEyeTransforms();
 
+        charging = laserChargeEffect.GetComponent<ParticleSystem>();
         
     }
 
@@ -71,6 +82,19 @@ public class BossController : MonoBehaviour {
                 currentBombSpawnTime = DetermineSpawnTime();
 
             }
+            timeSinceLastLaser += Time.deltaTime;
+            if (timeSinceLastLaser > timeBetweenLaser - (charging.duration + 1f) && !isCharging)
+            {
+                ChargeLaser();
+                isCharging = true;
+            }
+
+            if (timeSinceLastLaser > timeBetweenLaser)
+            {
+                ShootLaser();
+                timeSinceLastLaser = 0f;
+                
+            }
         }
 
         if (currentHealth <= 0f)
@@ -83,6 +107,17 @@ public class BossController : MonoBehaviour {
         {
             TestEyeMaterialChange();
         }
+    }
+
+    private void ChargeLaser()
+    {
+        Instantiate(laserChargeEffect, this.transform.position + new Vector3(-6f, .5f, 0), Quaternion.identity);
+    }
+
+    private void ShootLaser()
+    {
+        Instantiate(laser, this.transform.position + new Vector3(0,.5f,0), Quaternion.Euler(new Vector3(-90f, 180f, 0)));
+        isCharging = false;
     }
 
     //This method adjusts the timing between bomb spawns based on the score.
