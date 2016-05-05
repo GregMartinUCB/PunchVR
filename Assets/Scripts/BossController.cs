@@ -111,22 +111,22 @@ public class BossController : MonoBehaviour {
 
     private void ChargeLaser()
     {
-        Instantiate(laserChargeEffect, this.transform.position + new Vector3(-6f, .5f, 0), Quaternion.identity);
+        Instantiate(laserChargeEffect, this.transform.position + new Vector3(-6f, .7f, 0), Quaternion.identity);
     }
 
     private void ShootLaser()
     {
-        Instantiate(laser, this.transform.position + new Vector3(0,.5f,0), Quaternion.Euler(new Vector3(-90f, 180f, 0)));
+        Instantiate(laser, this.transform.position + new Vector3(0,.7f,0), Quaternion.Euler(new Vector3(-90f, 180f, 0)));
         isCharging = false;
     }
 
     //This method adjusts the timing between bomb spawns based on the score.
     //As the score approaches infinity the new spawn time will be 0.5 sec between bombs.
-    //at score = scoreModifier^2 the time between bombs will be halfway between max and min.
+    //at score = (scoreModifier^2)/4 the time between bombs will be halfway between max and min.
     private float DetermineSpawnTime()
     {
         float scoreAdjustedTime = Mathf.Sqrt(gameManager.score);
-        scoreAdjustedTime /= (scoreModifier + Mathf.Sqrt(gameManager.score));
+        scoreAdjustedTime /= (scoreModifier/2f + Mathf.Sqrt(gameManager.score));
 
         float newSpawnTime = maxBombSpawnTime - (maxBombSpawnTime - 0.5f) * scoreAdjustedTime;
 

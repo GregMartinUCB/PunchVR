@@ -51,17 +51,17 @@ public class PlayerManager : MonoBehaviour {
 
     }
 
-    //void OnTriggerEnter(Collider col)
-    //{
-    //    if(col.gameObject.tag == "Bag")
-    //    {
-    //        TakeDamage();
-    //    }
-    //    else
-    //    {
-    //        return;
-    //    }
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "Laser")
+        {
+            gm.isGameOver = true;
+        }
+        else
+        {
+            return;
+        }
 
-    //}
+    }
 
 }

@@ -90,6 +90,13 @@ public class BombController : MonoBehaviour {
 
 
         }
+
+        //If the bomb enters the laser it will be destroyed
+        if(col.tag == "Laser")
+        {
+            Destroy(gameObject);
+
+        }
     }
 
     //Instatiates a explosion particle effect and sound then destroys the bomb gameobject
