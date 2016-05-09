@@ -37,6 +37,7 @@ public class BossController : MonoBehaviour {
     private float timeSinceLastLaser = 0f;
     private ParticleSystem charging;
     private bool isCharging = false;
+    private ChangeMouth mouthChanger;
 
     void Awake()
     {
@@ -55,7 +56,9 @@ public class BossController : MonoBehaviour {
         GetEyeTransforms();
 
         charging = laserChargeEffect.GetComponent<ParticleSystem>();
-        
+        mouthChanger = GetComponentInChildren<ChangeMouth>();
+
+
     }
 
   
@@ -92,7 +95,9 @@ public class BossController : MonoBehaviour {
             if (timeSinceLastLaser > timeBetweenLaser)
             {
                 ShootLaser();
+                StartCoroutine(mouthChanger.ChangeToNormalMouth());
                 timeSinceLastLaser = 0f;
+                
                 
             }
         }
@@ -112,6 +117,7 @@ public class BossController : MonoBehaviour {
     private void ChargeLaser()
     {
         Instantiate(laserChargeEffect, this.transform.position + new Vector3(-6f, .7f, 0), Quaternion.identity);
+        mouthChanger.ChangeToLaserMouth();
     }
 
     private void ShootLaser()
