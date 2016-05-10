@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour {
             //These values for positioning the game over sign and restart button are hard coded unfortunately
             //A better design would make them appear based on player position/rotation.
             Instantiate(gameOverSign, new Vector3(4.34f,1.86f,0),Quaternion.Euler(0,-90f,0));
-            Instantiate(restartButton, new Vector3(-0.029f,1.046f,1.187f) , Quaternion.Euler(90f, 180f, 0f));
+            Instantiate(restartButton, new Vector3(-0.029f,1.046f,1.333f) , Quaternion.Euler(90f, 180f, 0f));
         }
 		
 
@@ -201,4 +201,14 @@ public class GameManager : MonoBehaviour {
         score = 0f;
     }
 
+    public void RestartLevel()
+    {
+        StartCoroutine(RestartDelay());
+       
+    }
+    IEnumerator RestartDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        SteamVR_LoadLevel.Begin("MainLevel");
+    }
 }

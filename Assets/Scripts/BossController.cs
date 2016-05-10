@@ -116,13 +116,13 @@ public class BossController : MonoBehaviour {
 
     private void ChargeLaser()
     {
-        Instantiate(laserChargeEffect, this.transform.position + new Vector3(-6f, .7f, 0), Quaternion.identity);
+        Instantiate(laserChargeEffect, this.transform.position + new Vector3(-6f, .9f, 0), Quaternion.identity);
         mouthChanger.ChangeToLaserMouth();
     }
 
     private void ShootLaser()
     {
-        Instantiate(laser, this.transform.position + new Vector3(0,.7f,0), Quaternion.Euler(new Vector3(-90f, 180f, 0)));
+        Instantiate(laser, this.transform.position + new Vector3(0,.9f,0), Quaternion.Euler(new Vector3(-90f, 180f, 0)));
         isCharging = false;
     }
 
