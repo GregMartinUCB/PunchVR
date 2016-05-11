@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using System;
 using Random = UnityEngine.Random;
+using System.IO;
 
 public class GameManager : MonoBehaviour {
 
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour {
     public GameObject restartButton;
     public float bombSpawnTime = 1f;
     public float score = 0f;
+    public int[] scoreHistory;
 
 
     private float timeSinceBomb = 0f;
@@ -23,11 +25,15 @@ public class GameManager : MonoBehaviour {
     private bool isGameOverDisplayed = false;
     private TextMesh scoreText;
     private MeshRenderer scoreRenderer;
+    [SerializeField]
+    private string scoreFileName = "MyScores.txt";
 
     //Creates a singleton
     //****************************************************
     private static GameManager _instance = null;
-	public static GameManager Instance
+    
+
+    public static GameManager Instance
 	{
 		get{return _instance;}
 	}
@@ -50,9 +56,12 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+
         FindForceDirTest();
         scoreText = GetComponentInChildren<TextMesh>();
         scoreRenderer = scoreText.gameObject.GetComponent<MeshRenderer>();
+
+        TestScoreRecorder();
 
     }
 
@@ -76,6 +85,9 @@ public class GameManager : MonoBehaviour {
 
         if (isGameOver && !isGameOverDisplayed)
         {
+            WriteScoreToFile(scoreFileName);
+            scoreHistory = ReadScores(scoreFileName);
+
             isGameOverDisplayed = true;
 
             //These values for positioning the game over sign and restart button are hard coded unfortunately
@@ -83,9 +95,102 @@ public class GameManager : MonoBehaviour {
             Instantiate(gameOverSign, new Vector3(4.34f,1.86f,0),Quaternion.Euler(0,-90f,0));
             Instantiate(restartButton, new Vector3(-0.029f,1.046f,1.333f) , Quaternion.Euler(90f, 180f, 0f));
         }
-		
 
-	}
+        if (isGameOverDisplayed)
+        {
+            DisplayTop3();
+        }
+
+
+    }
+
+
+    //Displays the top 3 scores in the scoreHistory int array
+    private void DisplayTop3()
+    {
+        string textForScoreText = "\n Top 3 Scores:\n";
+        foreach (int tempscore in scoreHistory)
+        {
+            textForScoreText = textForScoreText + tempscore.ToString() + "\n";
+        }
+        scoreText.fontSize = 50;
+        scoreText.text = textForScoreText;
+    }
+
+    //Returns a sorted array of the top 3 scores that were written by the WriteScoreToFile function
+    private int[] ReadScores(string fileName)
+    {
+        string[] lines;
+        lines = File.ReadAllLines(fileName);
+
+        int[] scoresAsInt = new int[lines.Length];
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            scoresAsInt[i] = Convert.ToInt32(lines[i]);
+        }
+
+        int[] sortedScores = SortScores(scoresAsInt);
+        int[] top3 = new int[3];
+        for(int i = 0; i < 3; i++)
+        {
+            top3[i] = sortedScores[i];
+        }
+
+        return top3;
+          
+    }
+
+    //Writes a new line the scores file.
+    private void WriteScoreToFile( string FileName)
+    {
+        var scoreHistory = File.AppendText(FileName);
+        scoreHistory.WriteLine(score);
+        scoreHistory.Close();
+    }
+
+    private void TestScoreRecorder()
+    {
+        var scoreHistory = File.AppendText("Test.txt");
+        scoreHistory.WriteLine(1);
+        scoreHistory.WriteLine(5);
+        scoreHistory.WriteLine(7);
+        scoreHistory.WriteLine(2);
+        scoreHistory.WriteLine(22);
+        scoreHistory.Close();
+
+        int[] readScores = ReadScores("Test.txt");
+
+        foreach (int scoreLine in readScores)
+        {
+            Debug.Log(scoreLine);
+        }
+
+    }
+
+    //Conduct a bubble sort
+    private int[] SortScores(int[] inputArray)
+    {
+        int i, j;
+
+        
+        for (j = inputArray.Length - 1; j > 0; j--)
+        {
+            for(i = 0; i<j; i++)
+            {
+                if(inputArray[i]< inputArray[i + 1])
+                {
+                    
+                    int temporary;
+
+                    temporary = inputArray[i+1];
+                    inputArray[i+1] = inputArray[i];
+                    inputArray[i] = temporary;
+                }
+            }
+        }
+        return inputArray;
+    }
 
     //A public method is used to allow the bosscontroller to increase the score while leaving the score a private variable
     public void IncreaseScore(float increaseBy)
@@ -192,6 +297,8 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+
+    //Functions to reset the boolean logic and restart the game
     public void ResetStartConditions()
     {
         scoreRenderer.enabled = false;
@@ -200,7 +307,6 @@ public class GameManager : MonoBehaviour {
         isGameOverDisplayed = false;
         score = 0f;
     }
-
     public void RestartLevel()
     {
         StartCoroutine(RestartDelay());
