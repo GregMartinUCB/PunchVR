@@ -10,7 +10,6 @@ public class BombController : MonoBehaviour {
     public bool hasBeenHit;
 
     private float timeSinceHit = 0f;
-    private Rigidbody bombRB;
     private GloveSoundManager punchSound;
     [SerializeField]
     private AudioClip explosionSound;
@@ -22,7 +21,6 @@ public class BombController : MonoBehaviour {
     void Start () {
 
         hasBeenHit = false;
-        bombRB = GetComponent<Rigidbody>();
         gm = GameObject.FindObjectOfType<GameManager>();
 
         //There should only be one object with the tag MainCamera, so this method of instantiating should

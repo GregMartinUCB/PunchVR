@@ -14,7 +14,6 @@ public class GloveController : MonoBehaviour
 
 
     private GloveSoundManager gloveSoundManager;
-    //private PhysicsProperties gloveProperties;
 
 
     //Variables for determining the moving standard displacement of a controller 
@@ -26,8 +25,7 @@ public class GloveController : MonoBehaviour
     private int arrayIndex = 0;
     int lengthOfDisplacementArray;
 
-    //For spawning bombs
-    public GameObject bomb;
+   
 
     //used to position glove correctly
     private Vector3 rightGlovePositionOffset = new Vector3(-0.0883f, 0, -.122f);
@@ -50,8 +48,8 @@ public class GloveController : MonoBehaviour
 
         device = SteamVR_Controller.Input((int)trackedObj.index);
 
-        InitializeDisplacementArray();
-        standardDeviation=Vector3.zero;
+        //InitializeDisplacementArray();
+        //standardDeviation=Vector3.zero;
 
         gloveSoundManager = GetComponent<GloveSoundManager>();
         //gloveProperties = GetComponent<PhysicsProperties>();
@@ -89,19 +87,15 @@ public class GloveController : MonoBehaviour
         }
 
         //The standard deviation as a method of reducing the "Wii syndrome" isn't well optimized and may be removed.
-        RecordPosition();
-        standardDeviation = CalculateDeviation(displacementPoints);
-        movingAvgDisplacement = standardDeviation.magnitude;
+        //RecordPosition();
+        //standardDeviation = CalculateDeviation(displacementPoints);
+        //movingAvgDisplacement = standardDeviation.magnitude;
         
 
 
 
 
-        if (device.GetPressUp(SteamVR_Controller.ButtonMask.Grip))
-        {
-            Instantiate(bomb, this.transform.position + this.transform.right, Quaternion.identity);
-
-        }
+       
 
     }
 
@@ -116,13 +110,17 @@ public class GloveController : MonoBehaviour
         {
             return;
         }
+		if (collidedObject.tag == "Mine")
+		{
+			collidedObject.GetComponent<MineController> ().Explode ();
+		}
         if (collidedRigidBody == null)
         {
             Debug.Log("Collision object has no rigid body");
             Debug.Log(collidedObject.name);
 
         }
-        else
+		if (collidedRigidBody != null)
         {
 
             Debug.Log(collidedObject.name);

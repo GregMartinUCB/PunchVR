@@ -18,6 +18,11 @@ public class BossController : MonoBehaviour {
     private float currentBombSpawnTime;
     private int whichEyeSpawnBomb = 0;
 
+	//Variables for mine
+	public GameObject mine;
+	[SerializeField]
+	private float delayBeforeMine = 10;
+
 
     //Variables for boss positioning
     private bool destinationReached = false;
@@ -33,6 +38,7 @@ public class BossController : MonoBehaviour {
     //Variables for Laser
     public GameObject laser;
     public GameObject laserChargeEffect;
+	public GameObject laserOutline;
     public float timeBetweenLaser = 10f;
     private float timeSinceLastLaser = 0f;
     private ParticleSystem charging;
@@ -77,13 +83,24 @@ public class BossController : MonoBehaviour {
            
 
             timeSinceBombSpawn += Time.deltaTime;
+			delayBeforeMine -= Time.deltaTime;
             if (timeSinceBombSpawn > currentBombSpawnTime)
             {
-                //Shoot bomb, reset counter till next bomb and re-evaluate what the spawn rate should be.
-                ShootBomb();
-                timeSinceBombSpawn = 0f;
-                currentBombSpawnTime = DetermineSpawnTime();
+				if (delayBeforeMine > 0) {
+					//Shoot bomb, reset counter till next bomb and re-evaluate what the spawn rate should be.
+					ShootBomb ();
 
+				} else
+				{
+					int mineOrBomb = UnityEngine.Random.Range (0, 2);
+					if (mineOrBomb == 0)
+					{
+						ShootBomb ();
+					} else
+					{
+						ShootMine ();
+					}
+				}
             }
             timeSinceLastLaser += Time.deltaTime;
             if (timeSinceLastLaser > timeBetweenLaser - (charging.duration + 1f) && !isCharging)
@@ -117,6 +134,7 @@ public class BossController : MonoBehaviour {
     private void ChargeLaser()
     {
         Instantiate(laserChargeEffect, this.transform.position + new Vector3(-6f, .9f, 0), Quaternion.identity);
+		Instantiate(laserOutline, this.transform.position + new Vector3(0,.9f,0), Quaternion.Euler(new Vector3(-90f, 180f, 0)));
         mouthChanger.ChangeToLaserMouth();
     }
 
@@ -198,8 +216,24 @@ public class BossController : MonoBehaviour {
 
         bombRB.isKinematic = true;
 
+		timeSinceBombSpawn = 0f;
+		currentBombSpawnTime = DetermineSpawnTime ();
 
     }
+	private void ShootMine()
+	{
+		//whichEyeSpawnBomb%2 will alternate between 0 and 1 making which eye the bomb spawn from alternate.
+		GameObject mineInstance = (GameObject)Instantiate(mine, eyeTransform[whichEyeSpawnBomb%2].position, Quaternion.identity);
+		whichEyeSpawnBomb++;
+
+		//Might be able to remove this and just set isKinematic in the Prefab
+		Rigidbody mineRB = mineInstance.GetComponent<Rigidbody>();
+		//mineRB.isKinematic = true;
+
+		timeSinceBombSpawn = 0f;
+		currentBombSpawnTime = DetermineSpawnTime ();
+
+	}
 
 
     //This method finds the transforms of the eyes. These transforms will be used to position bombs.

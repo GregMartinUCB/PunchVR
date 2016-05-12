@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour {
 
         int[] sortedScores = SortScores(scoresAsInt);
         int[] top3 = new int[3];
-        for(int i = 0; i < 3; i++)
+		for(int i = 0; i < sortedScores.Length && i < 3; i++)
         {
             top3[i] = sortedScores[i];
         }
@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour {
     private void WriteScoreToFile( string FileName)
     {
         var scoreHistory = File.AppendText(FileName);
-        scoreHistory.WriteLine(score);
+		scoreHistory.WriteLine(Math.Round(score,0).ToString());
         scoreHistory.Close();
     }
 
@@ -306,6 +306,7 @@ public class GameManager : MonoBehaviour {
         isGameOver = false;
         isGameOverDisplayed = false;
         score = 0f;
+		scoreText.fontSize = 150;
     }
     public void RestartLevel()
     {
