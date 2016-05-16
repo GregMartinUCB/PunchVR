@@ -122,10 +122,6 @@ public class GloveController : MonoBehaviour
         }
 		if (collidedRigidBody != null)
         {
-
-            Debug.Log(collidedObject.name);
-
-
             //collision.relativevelocity was not returning a correct value, instead I'll use the addition of
             //the controller's velocity and the object collided with. Also the negative is needed to make the
             //relative velocity be relative to the object hit.
@@ -134,14 +130,14 @@ public class GloveController : MonoBehaviour
 
             //Find direction of rebound
             Vector3 forceDir = gameManager.FindForceDir(relativeVel, col.contacts[0].normal);
-            Debug.Log("Average Displacement of glove: "+movingAvgDisplacement);
-            Debug.Log("Direction of force: "+forceDir);
+            
 
             //Amplify hit with the moving average squared and an arbitrary scalar.
             //float bonusPower = (float)Math.Pow(movingAvgDisplacement, 2f) * gloveProperties.gloveForceMultiplier;
             float bonusPower = device.velocity.sqrMagnitude;
-
+			Debug.Log (bonusPower);
             //Apply force as an impulse using the normalized direction found with FindForceDir()
+
             collidedRigidBody.AddForce(forceDir.normalized * bonusPower, ForceMode.Impulse);
             collidedRigidBody.useGravity = true;
 
