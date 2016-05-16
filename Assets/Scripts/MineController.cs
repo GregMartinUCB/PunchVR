@@ -14,7 +14,7 @@ public class MineController : MonoBehaviour {
 	private Vector3 playerDir;
 	[SerializeField]
 	private float mineSpeed = .5f;
-	private float kinematicDelay = 0.5f;
+
 
 
 

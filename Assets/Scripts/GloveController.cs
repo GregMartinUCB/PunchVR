@@ -14,6 +14,9 @@ public class GloveController : MonoBehaviour
 
 
     private GloveSoundManager gloveSoundManager;
+	private bool isMenuDisplayed= false;
+	private GameObject restart;
+	private GameObject quit;
 
 
     //Variables for determining the moving standard displacement of a controller 
@@ -39,6 +42,8 @@ public class GloveController : MonoBehaviour
     {
 
         gameManager = FindObjectOfType<GameManager>();
+		restart = gameManager.restartButton;
+		quit = gameManager.quitButton;
             
         //quick test to determine if Calculate Standard Deviation is working
         CalculateDeviationTest();
@@ -53,6 +58,7 @@ public class GloveController : MonoBehaviour
 
         gloveSoundManager = GetComponent<GloveSoundManager>();
         //gloveProperties = GetComponent<PhysicsProperties>();
+
 
 
     }
@@ -86,18 +92,21 @@ public class GloveController : MonoBehaviour
                 Debug.Log("Object's Tag does not match requirement to fix glove position");
         }
 
-        //The standard deviation as a method of reducing the "Wii syndrome" isn't well optimized and may be removed.
-        //RecordPosition();
-        //standardDeviation = CalculateDeviation(displacementPoints);
-        //movingAvgDisplacement = standardDeviation.magnitude;
-        
+			
+		if (device.GetPressUp(EVRButtonId.k_EButton_ApplicationMenu) && !isMenuDisplayed)
+		{
+			Invoke ("DisplayMenu", 0.1f);
+		}
+		if (device.GetPressUp(EVRButtonId.k_EButton_ApplicationMenu) && isMenuDisplayed) 
+		{
+			GameObject[] buttons = GameObject.FindGameObjectsWithTag ("Button");
+			foreach (GameObject button in buttons) {
+				Destroy (button);
+			}
+			isMenuDisplayed = false;
+		}
 
-
-
-
-       
-
-    }
+	}
 
     
 
@@ -256,4 +265,9 @@ public class GloveController : MonoBehaviour
 
     }
 
+	private void DisplayMenu(){
+		Instantiate(restart, new Vector3(-0.529f,1.046f,1.333f) , Quaternion.Euler(90f, 180f, 0f));
+		Instantiate (quit, new Vector3 (0.5f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
+		isMenuDisplayed = true;
+	}
 }

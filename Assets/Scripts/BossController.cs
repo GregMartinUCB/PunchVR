@@ -189,7 +189,6 @@ public class BossController : MonoBehaviour {
 
     }   
 
-   
 
     //Rise up and intimidate the player
     private void Ascend()
