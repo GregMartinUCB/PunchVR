@@ -10,13 +10,18 @@ public class PlayerManager : MonoBehaviour {
 
 
     private bool displayHurtEffect = false;
+	private ScoreKeeper scorer;
+	private UnityStandardAssets.ImageEffects.ScreenOverlay hurtRenderer;
 
     
     private int currentHealth = 0;
 
     void Start()
     {
+		hurtRenderer = GetComponent<UnityStandardAssets.ImageEffects.ScreenOverlay> ();
+		hurtRenderer.enabled = false;
         gm = FindObjectOfType<GameManager>();
+		scorer = FindObjectOfType<ScoreKeeper> ();
         currentHealth = maxHealth;
     }
 
@@ -27,27 +32,23 @@ public class PlayerManager : MonoBehaviour {
         if (currentHealth <= 0)
         {
             gm.isGameOver = true;
+			scorer.LoseLife (currentHealth);
         }
         if (displayHurtEffect == false)
         {
             displayHurtEffect = true;
+			hurtRenderer.enabled = true;
             StartCoroutine(StopHurtEffect());
         }
 
     }
-
-    void OnGUI()
-    {
-        if (displayHurtEffect == true)
-        {
-            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), hurtTexture, ScaleMode.StretchToFill);
-        }
-    }
+		
 
     IEnumerator StopHurtEffect()
     {
         yield return new WaitForSeconds(displayHurtTime);
         displayHurtEffect = false;
+		hurtRenderer.enabled = false;
 
     }
 

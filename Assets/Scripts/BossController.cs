@@ -8,6 +8,7 @@ public class BossController : MonoBehaviour {
     public GameObject player;
     public float maxHealth = 100f;
     private float currentHealth = 0f;
+	private ScoreKeeper scorer;
 
 
     //Variables for Bombs
@@ -51,6 +52,7 @@ public class BossController : MonoBehaviour {
         currentBombSpawnTime = maxBombSpawnTime;
         //There should only ever be one game manager because it is a singleton nopt destroyed on load.
         gameManager = FindObjectOfType<GameManager>();
+		scorer = FindObjectOfType<ScoreKeeper> ();
         
     }
 
@@ -149,8 +151,8 @@ public class BossController : MonoBehaviour {
     //at score = (scoreModifier^2)/4 the time between bombs will be halfway between max and min.
     private float DetermineSpawnTime()
     {
-        float scoreAdjustedTime = Mathf.Sqrt(gameManager.score);
-        scoreAdjustedTime /= (scoreModifier/2f + Mathf.Sqrt(gameManager.score));
+		float scoreAdjustedTime = Mathf.Sqrt(scorer.score);
+		scoreAdjustedTime /= (scoreModifier/2f + Mathf.Sqrt(scorer.score));
 
         float newSpawnTime = maxBombSpawnTime - (maxBombSpawnTime - 0.5f) * scoreAdjustedTime;
 
@@ -177,7 +179,7 @@ public class BossController : MonoBehaviour {
         //By scaling the damage based on the projectile speed there should be an incentive
         //to try and hit as hard as possible.
         currentHealth -= 1f * projectileVelocity;
-        gameManager.IncreaseScore(scoreModifier);
+		scorer.IncreaseScore(scoreModifier);
 
         //Made this scalable in case I want a multi-eyed boss. Most likely overcoding though.
         foreach (ChangeEyeMaterial eye in eyeChangers)

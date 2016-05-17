@@ -16,19 +16,13 @@ public class GameManager : MonoBehaviour {
     public GameObject restartButton;
 	public GameObject quitButton;
     public float bombSpawnTime = 1f;
-    public float score = 0f;
-    public int[] scoreHistory;
+	public bool isGameOverDisplayed = false;
 
 
+	private ScoreKeeper scorer;
     private float timeSinceBomb = 0f;
     private bool spawnClear = false;
     private Vector3 spawnSpot;
-    private bool isGameOverDisplayed = false;
-    private TextMesh scoreText;
-    private MeshRenderer scoreRenderer;
-    [SerializeField]
-    private string scoreFileName = "MyScores.txt";
-
     //Creates a singleton
     //****************************************************
     private static GameManager _instance = null;
@@ -59,146 +53,32 @@ public class GameManager : MonoBehaviour {
     {
 
         FindForceDirTest();
-        scoreText = GetComponentInChildren<TextMesh>();
-        scoreRenderer = scoreText.gameObject.GetComponent<MeshRenderer>();
-
-        TestScoreRecorder();
 
     }
 
 	void Update(){
 
-        if (isStarted && !isGameOver)
-        {
-            //use if you want bombs to spawn infront of the player.
-            //SelfSpawnBombs();
-            if (scoreRenderer.enabled == false)
-            {
-                scoreRenderer.enabled = true;
-            }
+       
 
-
-            IncreaseScore(Time.deltaTime);
-            scoreText.text = Math.Round(score).ToString();
-
-            
-        }
-
-        if (isGameOver && !isGameOverDisplayed)
-        {
-            WriteScoreToFile(scoreFileName);
-            scoreHistory = ReadScores(scoreFileName);
-
-            isGameOverDisplayed = true;
-
-            //These values for positioning the game over sign and restart button are hard coded unfortunately
-            //A better design would make them appear based on player position/rotation.
-            Instantiate(gameOverSign, new Vector3(4.34f,1.86f,0),Quaternion.Euler(0,-90f,0));
-            Instantiate(restartButton, new Vector3(-0.529f,1.046f,1.333f) , Quaternion.Euler(90f, 180f, 0f));
+		if (isGameOver && !isGameOverDisplayed)
+		{
+			//These values for positioning the game over sign and restart button are hard coded unfortunately
+			//A better design would make them appear based on player position/rotation.
+			Instantiate (gameOverSign, new Vector3 (4.34f, 1.86f, 0), Quaternion.Euler (0, -90f, 0));
+			Instantiate (restartButton, new Vector3 (-0.529f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
 			Instantiate (quitButton, new Vector3 (0.5f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
-        }
-
-        if (isGameOverDisplayed)
-        {
-            DisplayTop3();
-        }
+		}
 
 
     }
 
 
     //Displays the top 3 scores in the scoreHistory int array
-    private void DisplayTop3()
-    {
-        string textForScoreText = "\n Top 3 Scores:\n";
-        foreach (int tempscore in scoreHistory)
-        {
-            textForScoreText = textForScoreText + tempscore.ToString() + "\n";
-        }
-        scoreText.fontSize = 50;
-        scoreText.text = textForScoreText;
-    }
 
-    //Returns a sorted array of the top 3 scores that were written by the WriteScoreToFile function
-    private int[] ReadScores(string fileName)
-    {
-        string[] lines;
-        lines = File.ReadAllLines(fileName);
 
-        int[] scoresAsInt = new int[lines.Length];
 
-        for (int i = 0; i < lines.Length; i++)
-        {
-            scoresAsInt[i] = Convert.ToInt32(lines[i]);
-        }
 
-        int[] sortedScores = SortScores(scoresAsInt);
-        int[] top3 = new int[3];
-		for(int i = 0; i < sortedScores.Length && i < 3; i++)
-        {
-            top3[i] = sortedScores[i];
-        }
 
-        return top3;
-          
-    }
-
-    //Writes a new line the scores file.
-    private void WriteScoreToFile( string FileName)
-    {
-        var scoreHistory = File.AppendText(FileName);
-		scoreHistory.WriteLine(Math.Round(score,0).ToString());
-        scoreHistory.Close();
-    }
-
-    private void TestScoreRecorder()
-    {
-        var scoreHistory = File.AppendText("Test.txt");
-        scoreHistory.WriteLine(1);
-        scoreHistory.WriteLine(5);
-        scoreHistory.WriteLine(7);
-        scoreHistory.WriteLine(2);
-        scoreHistory.WriteLine(22);
-        scoreHistory.Close();
-
-        int[] readScores = ReadScores("Test.txt");
-
-        foreach (int scoreLine in readScores)
-        {
-            Debug.Log(scoreLine);
-        }
-
-    }
-
-    //Conduct a bubble sort
-    private int[] SortScores(int[] inputArray)
-    {
-        int i, j;
-
-        
-        for (j = inputArray.Length - 1; j > 0; j--)
-        {
-            for(i = 0; i<j; i++)
-            {
-                if(inputArray[i]< inputArray[i + 1])
-                {
-                    
-                    int temporary;
-
-                    temporary = inputArray[i+1];
-                    inputArray[i+1] = inputArray[i];
-                    inputArray[i] = temporary;
-                }
-            }
-        }
-        return inputArray;
-    }
-
-    //A public method is used to allow the bosscontroller to increase the score while leaving the score a private variable
-    public void IncreaseScore(float increaseBy)
-    {
-        score += increaseBy;
-    }
 
     //This method was used to generate bombs infront of the player. This method has been rendered obsolete
     //by programming the boss to shoot bombs at the player. This however is useful for prototyping.
@@ -303,12 +183,12 @@ public class GameManager : MonoBehaviour {
     //Functions to reset the boolean logic and restart the game
     public void ResetStartConditions()
     {
-        scoreRenderer.enabled = false;
+        scorer.scoreRenderer.enabled = false;
         isStarted = false;
         isGameOver = false;
         isGameOverDisplayed = false;
-        score = 0f;
-		scoreText.fontSize = 150;
+		scorer.score = 0f;
+		scorer.scoreText.fontSize = 150;
     }
     public void RestartLevel()
     {

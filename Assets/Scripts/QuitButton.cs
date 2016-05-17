@@ -34,7 +34,7 @@ public class QuitButton : MonoBehaviour {
 
 		if (distantPushed > .2f)
 		{
-			Application.Quit ();
+			Application.Quit();
 			buttonRigidBody.velocity = Vector3.zero;
 			Destroy(this.transform.parent.gameObject);
 		}
