@@ -51,35 +51,17 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+		scorer = FindObjectOfType<ScoreKeeper> ();
 
         FindForceDirTest();
 
     }
 
-	void Update(){
+	void Update()
+	{
 
-       
-
-		if (isGameOver && !isGameOverDisplayed)
-		{
-			//These values for positioning the game over sign and restart button are hard coded unfortunately
-			//A better design would make them appear based on player position/rotation.
-			Instantiate (gameOverSign, new Vector3 (4.34f, 1.86f, 0), Quaternion.Euler (0, -90f, 0));
-			Instantiate (restartButton, new Vector3 (-0.529f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
-			Instantiate (quitButton, new Vector3 (0.5f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
-		}
-
-
+   
     }
-
-
-    //Displays the top 3 scores in the scoreHistory int array
-
-
-
-
-
-
     //This method was used to generate bombs infront of the player. This method has been rendered obsolete
     //by programming the boss to shoot bombs at the player. This however is useful for prototyping.
     private void SelfSpawnBombs()
@@ -179,6 +161,14 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+	public void DisplayGameOver()
+	{
+		//These values for positioning the game over sign and restart button are hard coded unfortunately
+		//A better design would make them appear based on player position/rotation.
+		Instantiate (gameOverSign, new Vector3 (4.34f, 1.86f, 0), Quaternion.Euler (0, -90f, 0));
+		Instantiate (restartButton, new Vector3 (-0.529f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
+		Instantiate (quitButton, new Vector3 (0.5f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
+	}
 
     //Functions to reset the boolean logic and restart the game
     public void ResetStartConditions()

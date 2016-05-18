@@ -8,7 +8,6 @@ public class MineController : MonoBehaviour {
 	public GameObject explosion;
 	public bool hasBeenHit;
 
-	private Rigidbody mineRB;
 	private Transform playerHeadTransform;
 	private float timeSinceHit = 0f;
 	private Vector3 playerDir;
@@ -21,7 +20,6 @@ public class MineController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		hasBeenHit = false;
-		mineRB = GetComponent<Rigidbody>();
 		gm = GameObject.FindObjectOfType<GameManager>();
 
 		playerHeadTransform = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Transform>();
@@ -93,7 +91,7 @@ public class MineController : MonoBehaviour {
 		for (int i = 0; i < allImpactedColliders.Length; i++)
 		{
 			//The hmd has the tag MainCamera, so if the tag matches that have the player take damage!
-			if (allImpactedColliders[i].tag == "MainCamera")
+			if (allImpactedColliders[i].tag == "Player")
 			{
 				allImpactedColliders[i].gameObject.GetComponent<PlayerManager>().TakeDamage();
 			}

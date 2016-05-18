@@ -112,7 +112,7 @@ public class BombController : MonoBehaviour {
         for (int i = 0; i < allImpactedColliders.Length; i++)
         {
             //The hmd has the tag MainCamera, so if the tag matches that have the player take damage!
-            if (allImpactedColliders[i].tag == "MainCamera")
+            if (allImpactedColliders[i].tag == "Player")
             {
                 allImpactedColliders[i].gameObject.GetComponent<PlayerManager>().TakeDamage();
             }

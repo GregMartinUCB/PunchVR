@@ -22,7 +22,7 @@ public class BossController : MonoBehaviour {
 	//Variables for mine
 	public GameObject mine;
 	[SerializeField]
-	private float delayBeforeMine = 10;
+	private float delayBeforeMine = 30f;
 
 
     //Variables for boss positioning
@@ -94,8 +94,10 @@ public class BossController : MonoBehaviour {
 
 				} else
 				{
-					int mineOrBomb = UnityEngine.Random.Range (0, 2);
-					if (mineOrBomb == 0)
+					
+					float mineOrBomb = UnityEngine.Random.Range (0.0f, 2f)*MineFrequency (scorer.score);
+					Debug.Log (mineOrBomb);
+					if (mineOrBomb <= 1f)
 					{
 						ShootBomb ();
 					} else
@@ -132,6 +134,12 @@ public class BossController : MonoBehaviour {
             TestEyeMaterialChange();
         }
     }
+
+	private float MineFrequency ( float score)
+	{
+		float freqCoefficient = 0.75f * score / (100 + score);
+		return freqCoefficient;
+	}
 
     private void ChargeLaser()
     {
@@ -224,11 +232,10 @@ public class BossController : MonoBehaviour {
 	private void ShootMine()
 	{
 		//whichEyeSpawnBomb%2 will alternate between 0 and 1 making which eye the bomb spawn from alternate.
-		GameObject mineInstance = (GameObject)Instantiate(mine, eyeTransform[whichEyeSpawnBomb%2].position, Quaternion.identity);
+		Instantiate(mine, eyeTransform[whichEyeSpawnBomb%2].position, Quaternion.identity);
 		whichEyeSpawnBomb++;
 
 		//Might be able to remove this and just set isKinematic in the Prefab
-		Rigidbody mineRB = mineInstance.GetComponent<Rigidbody>();
 		//mineRB.isKinematic = true;
 
 		timeSinceBombSpawn = 0f;

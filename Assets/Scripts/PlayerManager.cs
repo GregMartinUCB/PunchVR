@@ -29,11 +29,12 @@ public class PlayerManager : MonoBehaviour {
     {
 
         currentHealth -= 1;
+		scorer.LoseLife (currentHealth);
         if (currentHealth <= 0)
         {
             gm.isGameOver = true;
-			scorer.LoseLife (currentHealth);
         }
+
         if (displayHurtEffect == false)
         {
             displayHurtEffect = true;

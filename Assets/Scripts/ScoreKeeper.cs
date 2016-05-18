@@ -27,7 +27,7 @@ public class ScoreKeeper : MonoBehaviour {
 		gameManager = FindObjectOfType<GameManager> ();
 		player = FindObjectOfType<PlayerManager> ();
 		scoreText = GetComponent<TextMesh> ();
-		TestScoreRecorder();
+		//TestScoreRecorder();
 		scoreRenderer = GetComponent<MeshRenderer>();
 	
 	}
@@ -58,7 +58,7 @@ public class ScoreKeeper : MonoBehaviour {
 		{
 			WriteScoreToFile (scoreFileName);
 			scoreHistory = ReadScores (scoreFileName);
-
+			gameManager.DisplayGameOver ();
 			gameManager.isGameOverDisplayed = true;
 		}
 		if (gameManager.isGameOverDisplayed)
@@ -85,7 +85,7 @@ public class ScoreKeeper : MonoBehaviour {
 		Vector3 offset = Vector3.zero + new Vector3(.85f,.8f,0);
 		for (int i = 0; i < maxHealth; i++)
 		{
-			gloves[i] = (GameObject)Instantiate (gloveMesh, this.transform.position + offset, Quaternion.identity);
+			gloves[i] = (GameObject)Instantiate (gloveMesh, this.transform.position + offset, Quaternion.Euler(-90f,-90,0));
 			gloves [i].transform.parent = this.transform;
 
 			offset.x -= chalkBoard.bounds.size.x/maxHealth;
@@ -135,12 +135,7 @@ public class ScoreKeeper : MonoBehaviour {
 		scoreHistory.WriteLine(22);
 		scoreHistory.Close();
 
-		int[] readScores = ReadScores("Test.txt");
-
-		foreach (int scoreLine in readScores)
-		{
-			Debug.Log(scoreLine);
-		}
+		//int[] readScores = ReadScores("Test.txt");
 
 	}
 

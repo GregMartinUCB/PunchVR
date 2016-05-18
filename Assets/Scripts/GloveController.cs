@@ -144,9 +144,8 @@ public class GloveController : MonoBehaviour
             //Amplify hit with the moving average squared and an arbitrary scalar.
             //float bonusPower = (float)Math.Pow(movingAvgDisplacement, 2f) * gloveProperties.gloveForceMultiplier;
             float bonusPower = device.velocity.sqrMagnitude;
-			Debug.Log (bonusPower);
-            //Apply force as an impulse using the normalized direction found with FindForceDir()
 
+            //Apply force as an impulse using the normalized direction found with FindForceDir()
             collidedRigidBody.AddForce(forceDir.normalized * bonusPower, ForceMode.Impulse);
             collidedRigidBody.useGravity = true;
 
