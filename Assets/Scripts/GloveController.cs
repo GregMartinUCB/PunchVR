@@ -156,7 +156,7 @@ public class GloveController : MonoBehaviour
             }
             if(collidedObject.tag == "Bag")
             {
-                gameManager.isStarted = true;
+				gameManager.StartGame ();
 
             }
 

@@ -17,7 +17,10 @@ public class GameManager : MonoBehaviour {
 	public GameObject quitButton;
     public float bombSpawnTime = 1f;
 	public bool isGameOverDisplayed = false;
-
+	public AudioClip activeSong;
+	public AudioClip passiveSong;
+	public AudioSource music;
+	public FadeInOut fader;
 
 	private ScoreKeeper scorer;
     private float timeSinceBomb = 0f;
@@ -51,17 +54,32 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+		music = GetComponent<AudioSource> ();
 		scorer = FindObjectOfType<ScoreKeeper> ();
+		fader = GetComponent<FadeInOut> ();
 
         FindForceDirTest();
-
+		music.Play ();
     }
 
 	void Update()
 	{
+		if (isStarted && music.clip != activeSong) 
+		{
+			StartCoroutine(fader.FadeIn (music, activeSong, 0.75f));
 
+		}
    
     }
+
+	public void StartGame ()
+	{
+		StartCoroutine (fader.FadeOut (music));
+		StartCoroutine(fader.FadeIn (music, activeSong, 0.75f));
+		isStarted = true;
+
+	}
+
     //This method was used to generate bombs infront of the player. This method has been rendered obsolete
     //by programming the boss to shoot bombs at the player. This however is useful for prototyping.
     private void SelfSpawnBombs()
@@ -179,6 +197,8 @@ public class GameManager : MonoBehaviour {
         isGameOverDisplayed = false;
 		scorer.score = 0f;
 		scorer.scoreText.fontSize = 150;
+		music.clip = passiveSong;
+
     }
     public void RestartLevel()
     {
