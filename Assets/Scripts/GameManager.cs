@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour {
 	{
 		if (isStarted && music.clip != activeSong) 
 		{
-			StartCoroutine(fader.FadeIn (music, activeSong, 0.75f));
+			StartCoroutine(fader.SwitchSong (music, activeSong, 0.75f));
 
 		}
    
@@ -74,8 +74,7 @@ public class GameManager : MonoBehaviour {
 
 	public void StartGame ()
 	{
-		StartCoroutine (fader.FadeOut (music));
-		StartCoroutine(fader.FadeIn (music, activeSong, 0.75f));
+		StartCoroutine(fader.SwitchSong (music, activeSong, 0.75f));
 		isStarted = true;
 
 	}
@@ -198,6 +197,8 @@ public class GameManager : MonoBehaviour {
 		scorer.score = 0f;
 		scorer.scoreText.fontSize = 150;
 		music.clip = passiveSong;
+
+		scorer.ResetLives ();
 
     }
     public void RestartLevel()

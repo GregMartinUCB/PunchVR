@@ -10,6 +10,9 @@ public class ScoreKeeper : MonoBehaviour {
 	public MeshRenderer scoreRenderer;
 	public TextMesh scoreText;
 	public GameObject gloveMesh;
+	[SerializeField]
+	private MeshRenderer chalkBoard;
+
 
 	private int[] scoreHistory;
 	private GameManager gameManager;
@@ -17,13 +20,11 @@ public class ScoreKeeper : MonoBehaviour {
 	private PlayerManager player;
 	private bool areGlovesDisplayed =false;
 	private GameObject[] gloves;
-	private MeshRenderer chalkBoard;
 
 
 	// Use this for initialization
 	void Start () {
 
-		chalkBoard = GameObject.Find ("Chalkboard").GetComponent<MeshRenderer>();
 		gameManager = FindObjectOfType<GameManager> ();
 		player = FindObjectOfType<PlayerManager> ();
 		scoreText = GetComponent<TextMesh> ();
@@ -88,7 +89,7 @@ public class ScoreKeeper : MonoBehaviour {
 			gloves[i] = (GameObject)Instantiate (gloveMesh, this.transform.position + offset, Quaternion.Euler(-90f,-90,0));
 			gloves [i].transform.parent = this.transform;
 
-			offset.x -= chalkBoard.bounds.size.x/maxHealth;
+			offset.x -= chalkBoard.bounds.size.y/maxHealth;
 		}
 		
 	}
@@ -170,5 +171,13 @@ public class ScoreKeeper : MonoBehaviour {
 	public void LoseLife(int currentHealth)
 	{
 		Destroy (gloves [currentHealth]);
+	}
+
+	public void ResetLives(){
+		foreach (GameObject glove in gloves) {
+
+			Destroy (glove);
+			areGlovesDisplayed = false;
+		}
 	}
 }

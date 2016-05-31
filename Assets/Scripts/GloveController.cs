@@ -2,6 +2,8 @@
 using System.Collections;
 using Valve.VR;
 using System;
+using System.IO;
+
 
 [RequireComponent(typeof(SteamVR_TrackedObject))]
 public class GloveController : MonoBehaviour
@@ -18,23 +20,14 @@ public class GloveController : MonoBehaviour
 	private GameObject restart;
 	private GameObject quit;
 
-
-    //Variables for determining the moving standard displacement of a controller 
-    public float movingAvgDisplacement;
-    [SerializeField]
-    private float averagingTimeSpan = .1f;
-    private Vector3[] displacementPoints;
-    private Vector3 standardDeviation;
-    private int arrayIndex = 0;
-    int lengthOfDisplacementArray;
-
-   
-
     //used to position glove correctly
     private Vector3 rightGlovePositionOffset = new Vector3(-0.0883f, 0, -.122f);
     private Vector3 leftGlovePositionOffset = new Vector3(.1f, 0, -.09f);
     private bool hasGloveBeenSet = false;
     private GameObject gloveModel;
+
+	string[] forDebugging = new string[3];
+	private bool vectorsRecorded = false;
 
 
 
@@ -46,7 +39,6 @@ public class GloveController : MonoBehaviour
 		quit = gameManager.quitButton;
             
         //quick test to determine if Calculate Standard Deviation is working
-        CalculateDeviationTest();
 
         trackedObj = GetComponent<SteamVR_TrackedObject>();
         //viveControllerModel = GetComponentInChildren<SteamVR_RenderModel>().gameObject;
@@ -97,6 +89,11 @@ public class GloveController : MonoBehaviour
 		{
 			Invoke ("DisplayMenu", 0.1f);
 		}
+		if (device.GetPressUp (EVRButtonId.k_EButton_SteamVR_Touchpad)&& !vectorsRecorded) 
+		{
+			LogDebug (forDebugging);
+			vectorsRecorded = true;
+		}
 		if (device.GetPressUp(EVRButtonId.k_EButton_ApplicationMenu) && isMenuDisplayed) 
 		{
 			GameObject[] buttons = GameObject.FindGameObjectsWithTag ("Button");
@@ -139,7 +136,12 @@ public class GloveController : MonoBehaviour
 
             //Find direction of rebound
             Vector3 forceDir = gameManager.FindForceDir(relativeVel, col.contacts[0].normal);
-            
+
+			//Feed these to the debugger.
+			forDebugging [0] = "Device velocity: " + device.velocity.ToString();
+			forDebugging [1] = "Relative Velocity: " + relativeVel.ToString();
+			forDebugging [2] = "Force Direction: " + forceDir.ToString();
+			vectorsRecorded = false;
 
             //Amplify hit with the moving average squared and an arbitrary scalar.
             //float bonusPower = (float)Math.Pow(movingAvgDisplacement, 2f) * gloveProperties.gloveForceMultiplier;
@@ -170,38 +172,19 @@ public class GloveController : MonoBehaviour
         
 
     }
+		
 
+	private void LogDebug(params string[] vectorsToPrint)
+	{
+		File.AppendAllText ("Log.txt", DateTime.Now.ToString()+ "\n");
+		for(int i = 0; i< vectorsToPrint.Length; i++)
+		{
+			
+			File.AppendAllText ("Log.txt", vectorsToPrint [i] + "\n");
 
-    //Initializes the Displacement Array with length determined by the rate
-    //and total time for averaging. Then initializes all elements with the zero vector.
-    private void InitializeDisplacementArray()
-    {
-        lengthOfDisplacementArray = (int)(averagingTimeSpan / Time.fixedDeltaTime);
-
-        displacementPoints = new Vector3[lengthOfDisplacementArray];
-
-        for (int i = 0; i < lengthOfDisplacementArray; i++)
-        {
-            displacementPoints[i] = Vector3.zero;
-        }
-    }
-
-
-    //TODO: There must be a better way to do this
-    //This will loop through the displacementPoints array at a rate defined by timeBetweenPoints
-    //each time it loops it will overwrite one of the array elements with the current position
-    //This will have displacementPoints only keep lengthOfDisplacementArray number of latest entries
-    private void RecordPosition()
-    {
-        displacementPoints[arrayIndex] = this.transform.position;
-        arrayIndex++;
-        //resets the index to 0
-        if (arrayIndex >= lengthOfDisplacementArray)
-        {
-            arrayIndex = 0;
-        }
-        
-    }
+		}
+		File.AppendAllText ("Log.txt", "\n");
+	}
 
 
     public void Rumble()
@@ -210,59 +193,6 @@ public class GloveController : MonoBehaviour
 
     }
 
-    //Used to calculate the standard deviation from an array of vector3 points
-    //returns a vector3 of the standard deviation for each axis.
-    //This is an attempt to avoid what I call "Wii syndrome." short little
-    //bursts of high velocity (read flick of wrist) shouldn't work.
-    private Vector3 CalculateDeviation(Vector3[] points)
-    {
-        Vector3 stdDeviation = Vector3.zero;
-        Vector3 avg = Vector3.zero;
-
-        for(int i = 0; i < points.Length;i++)
-        {
-            avg.x += points[i].x;
-            avg.y += points[i].y;
-            avg.z += points[i].z;
-        }
-
-        avg = avg / points.Length;
-
-        for (int i = 0; i < points.Length; i++)
-        {
-            stdDeviation.x += Mathf.Pow((points[i].x - avg.x), 2);
-            stdDeviation.y += Mathf.Pow((points[i].y - avg.y), 2);
-            stdDeviation.z += Mathf.Pow((points[i].z - avg.z), 2);
-
-        }
-
-        stdDeviation = stdDeviation / (points.Length-1);
-        stdDeviation.x = Mathf.Sqrt(stdDeviation.x);
-        stdDeviation.y = Mathf.Sqrt(stdDeviation.y);
-        stdDeviation.z = Mathf.Sqrt(stdDeviation.z);
-
-        
-
-        return stdDeviation;
-
-    }
-
-    //Test for CalculateDeviation Method, each axis should equal 1.29099
-    //The test will have a tolerance of +/-0.001
-    private void CalculateDeviationTest()
-    {
-        Vector3[] testArray = new[] {  new Vector3(0f,0f,0f),
-                                       new Vector3(1f,1f,1f),
-                                       new Vector3(2f,2f,2f),
-                                       new Vector3(3f,3f,3f)};
-
-        Vector3 resultSTD = CalculateDeviation(testArray);
-        if(resultSTD.x > 1.292 || resultSTD.x < 1.290)
-        {
-            Debug.LogError("CalculateDeviation Test Failed. Error greater than +/-0.001");
-        }
-
-    }
 
 	private void DisplayMenu(){
 		Instantiate(restart, new Vector3(-0.529f,1.046f,1.333f) , Quaternion.Euler(90f, 180f, 0f));
