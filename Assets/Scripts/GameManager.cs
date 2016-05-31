@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour {
     //Creates a singleton
     //****************************************************
     private static GameManager _instance = null;
+	private MeshRenderer credits;
     
 
     public static GameManager Instance
@@ -57,7 +58,9 @@ public class GameManager : MonoBehaviour {
 		music = GetComponent<AudioSource> ();
 		scorer = FindObjectOfType<ScoreKeeper> ();
 		fader = GetComponent<FadeInOut> ();
-
+		//Not the best way to get the credits Mesh Renderer, but as long as it is neither destroyed
+		//nor duplicated this way should suffice.
+		credits = GameObject.Find ("Credits").GetComponent<MeshRenderer> ();
         FindForceDirTest();
 		music.Play ();
     }
@@ -185,6 +188,7 @@ public class GameManager : MonoBehaviour {
 		Instantiate (gameOverSign, new Vector3 (4.34f, 1.86f, 0), Quaternion.Euler (0, -90f, 0));
 		Instantiate (restartButton, new Vector3 (-0.529f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
 		Instantiate (quitButton, new Vector3 (0.5f, 1.046f, 1.333f), Quaternion.Euler (90f, 180f, 0f));
+		credits.enabled = true;
 	}
 
     //Functions to reset the boolean logic and restart the game
@@ -197,6 +201,7 @@ public class GameManager : MonoBehaviour {
 		scorer.score = 0f;
 		scorer.scoreText.fontSize = 150;
 		music.clip = passiveSong;
+		credits.enabled = false;
 
 		scorer.ResetLives ();
 
